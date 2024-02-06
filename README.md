@@ -16,4 +16,4 @@ yarn create @wix/app --template git@github.com:wix-incubator/wix-space.git
 
 ## Install a live version of the template on your site
 
-https://wix.to/U3u01mG
+https://wix.to/wc86nyd
