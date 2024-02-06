@@ -1,10 +1,10 @@
 {
-  "name": "wix-space",
+  "name": "@wix/<%= packageName %>",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@wix/dashboard-react": "^1.0.4",
-    "@wix/sdk-react": "^0.3.8",
+    "@wix/dashboard-react": "<%= deps['@wix/dashboard-react'] %>",
+    "@wix/sdk-react": "<%= deps['@wix/sdk-react'] %>",
     "@wix/design-system": "^1.0.0",
     "@wix/wix-ui-icons-common": "^3.0.34",
     "@wix/dashboard-components-alpha": "^2.697.0"
@@ -13,8 +13,8 @@
     "@types/react": "^16.0.0",
     "@types/chance": "^1.1.6",
     "@types/lodash": "^4.14.202",
-    "@wix/cli": "^1.0.0",
-    "@wix/cli-app": "^1.0.0",
+    "@wix/cli": "<%= deps['@wix/cli'] %>",
+    "@wix/cli-app": "<%= deps['@wix/cli-app'] %>",
     "react": "^16.14.0",
     "react-dom": "16.14.0",
     "typescript": "^5.3.3"
