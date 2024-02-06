@@ -1,6 +1,7 @@
-import { Filter } from '@wix/dashboard-components-alpha';
+import { Filter, RangeItem } from '@wix/dashboard-components-alpha';
 
 export type SpaceshipFilters = {
   status: Filter<string[]>;
   maxDistance: Filter<string[]>;
+  launchDate: Filter<RangeItem<Date>>;
 };

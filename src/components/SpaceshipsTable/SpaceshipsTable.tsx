@@ -3,6 +3,8 @@ import {
   CollectionPage,
   CollectionToolbarFilters,
   CustomColumns,
+  DateRangeFilter,
+  dateRangeFilter,
   InfiniteScrollTable,
   MultiBulkActionToolbar,
   RadioGroupFilter,
@@ -34,6 +36,7 @@ export const SpaceshipsTable = () => {
         filters: {
           status: query.filters.status,
           maxDistance: query.filters.maxDistance,
+          launchDate: query.filters.launchDate,
         },
         sort: query.sort,
         search: query.search,
@@ -51,6 +54,7 @@ export const SpaceshipsTable = () => {
         itemName: (status) => (status === 'active' ? 'Active' : 'Inactive'),
       }),
       maxDistance: stringsArrayFilter(),
+      launchDate: dateRangeFilter(),
     },
   });
 
@@ -141,9 +145,10 @@ export const SpaceshipsTable = () => {
               title: 'Max Distance',
               width: '120px',
               render: (spaceship) => spaceship.maxDistance,
+              align: 'center',
               defaultHidden: true,
               infoTooltipProps: {
-                content: 'The maximum distance the spaceship can travel',
+                panelContent: 'The maximum distance the spaceship can travel',
               },
             },
             {
@@ -151,6 +156,7 @@ export const SpaceshipsTable = () => {
               title: 'Max Crew Members',
               width: '100px',
               render: (spaceship) => spaceship.maxCrewMembers,
+              align: 'center',
               defaultHidden: true,
             },
           ]}
@@ -175,9 +181,24 @@ export const SpaceshipsTable = () => {
           filters={
             <CollectionToolbarFilters inline={0}>
               <RadioGroupFilter
+                initiallyOpen
                 accordionItemProps={{ title: 'Max Distance' }}
                 data={['5', '10', '15']}
                 filter={table.collection.filters.maxDistance}
+              />
+
+              <DateRangeFilter
+                initiallyOpen
+                mode="ONLY_CUSTOM"
+                accordionItemProps={{ title: 'First Launched' }}
+                filter={table.collection.filters.launchDate}
+              />
+
+              <RadioGroupFilter
+                initiallyOpen
+                accordionItemProps={{ title: 'Status' }}
+                data={['active', 'inactive']}
+                filter={table.collection.filters.status}
               />
             </CollectionToolbarFilters>
           }

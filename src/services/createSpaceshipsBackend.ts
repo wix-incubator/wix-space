@@ -18,7 +18,12 @@ export const createSpaceshipsBackend = () => {
         name,
         model: chance.pickone(spaceshipModels),
         crewMembersCount,
-        launchDate: chance.date(),
+        launchDate: new Date(
+          chance.date({
+            min: new Date(2000, 0, 1),
+            max: new Date(2024, 0, 1),
+          }),
+        ),
         code: chance.string({
           length: 10,
           casing: 'upper',
@@ -27,7 +32,7 @@ export const createSpaceshipsBackend = () => {
         }),
         imageUrl: `https://source.unsplash.com/300x300/?spaceship,${name}`,
         status: chance.pickone(['active', 'inactive']),
-        maxDistance: chance.integer({ min: 0, max: 20 }),
+        maxDistance: chance.floating({ min: 0, max: 20, fixed: 1 }),
         maxCrewMembers: chance.integer({ min: crewMembersCount, max: 100 }),
       };
     },
@@ -36,7 +41,7 @@ export const createSpaceshipsBackend = () => {
     delay: { min: 300, max: 900 },
     predicate: ({ search, filters }) => {
       const rgx = new RegExp(`(\\s+|^)${escapeRegExp(search)}`, 'i');
-      const { status, maxDistance: [maxDistance] = [] } = filters;
+      const { status, maxDistance: [maxDistance] = [], launchDate } = filters;
       return (item) => {
         if (search && !rgx.test(`${item.name}`)) {
           return false;
@@ -50,6 +55,22 @@ export const createSpaceshipsBackend = () => {
           maxDistance != null &&
           maxDistance !== 'all' &&
           item.maxDistance > parseInt(maxDistance)
+        ) {
+          return false;
+        }
+
+        if (
+          launchDate &&
+          launchDate.from &&
+          item.launchDate.valueOf() < launchDate.from.valueOf()
+        ) {
+          return false;
+        }
+
+        if (
+          launchDate &&
+          launchDate.to &&
+          item.launchDate.valueOf() > launchDate.to.valueOf()
         ) {
           return false;
         }
