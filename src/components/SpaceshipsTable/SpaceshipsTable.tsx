@@ -104,7 +104,7 @@ export const SpaceshipsTable = () => {
             {
               id: 'shipNameAndModel',
               title: 'Ship Name / Model',
-              width: '236px',
+              width: '220px',
               render: (spaceship) => (
                 <SpaceshipMainCell spaceship={spaceship} />
               ),
@@ -120,14 +120,14 @@ export const SpaceshipsTable = () => {
             {
               id: 'launchDate',
               title: 'First Launched',
-              width: '120px',
+              width: '140px',
               render: (spaceship) => dateFormatter.format(spaceship.launchDate),
               align: 'center',
             },
             {
               id: 'idNumber',
               title: 'ID Number',
-              width: '120px',
+              width: '140px',
               render: (spaceship) => spaceship.code,
               infoTooltipProps: {
                 content: 'The unique identifier of the spaceship',
@@ -139,11 +139,12 @@ export const SpaceshipsTable = () => {
               width: '100px',
               render: (spaceship) =>
                 spaceship.status === 'active' ? 'Active' : 'Inactive',
+              align: 'center',
             },
             {
               id: 'maxDistance',
               title: 'Max Distance',
-              width: '120px',
+              width: '100px',
               render: (spaceship) => spaceship.maxDistance,
               align: 'center',
               defaultHidden: true,
@@ -154,7 +155,7 @@ export const SpaceshipsTable = () => {
             {
               id: 'maxCrewMembers',
               title: 'Max Crew Members',
-              width: '100px',
+              width: '140px',
               render: (spaceship) => spaceship.maxCrewMembers,
               align: 'center',
               defaultHidden: true,
