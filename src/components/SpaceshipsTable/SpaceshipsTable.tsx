@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import {
-  CollectionPage, CustomColumns,
+  CollectionPage,
+  CustomColumns,
   InfiniteScrollTable,
   MultiBulkActionToolbar,
+  stringsArrayFilter,
+  TabsFilter,
+  TabTotalCounterBadge,
   useCursorInfiniteScrollTable,
 } from '@wix/dashboard-components-alpha';
 import { Breadcrumbs, Page } from '@wix/design-system';
@@ -25,7 +29,9 @@ export const SpaceshipsTable = () => {
       const { items, total, cursor } = await backend.fetchData({
         limit: query.limit,
         cursor: query.cursor,
-        filters: query.filters,
+        filters: {
+          status: query.filters.status,
+        },
         sort: query.sort,
         search: query.search,
       });
@@ -37,7 +43,11 @@ export const SpaceshipsTable = () => {
       };
     },
     fetchErrorMessage: () => 'An error occurred while fetching the data',
-    filters: {},
+    filters: {
+      status: stringsArrayFilter({
+        itemName: (status) => (status === 'active' ? 'Active' : 'Inactive'),
+      }),
+    },
   });
 
   const { locale } = useEnvironment<EnvironmentState>();
@@ -72,6 +82,16 @@ export const SpaceshipsTable = () => {
           horizontalScroll
           bulkActionToolbar={() => <MultiBulkActionToolbar />}
           customColumns={<CustomColumns />}
+          tabs={
+            <TabsFilter
+              filter={table.collection.filters.status}
+              all="All Spaceships"
+              data={['active', 'inactive']}
+              renderCounterBadge={(value) => (
+                <TabTotalCounterBadge value={value} skin="neutralStandard" />
+              )}
+            />
+          }
           columns={[
             {
               id: 'shipNameAndModel',
@@ -103,13 +123,14 @@ export const SpaceshipsTable = () => {
               render: (spaceship) => spaceship.code,
               infoTooltipProps: {
                 content: 'The unique identifier of the spaceship',
-              }
+              },
             },
             {
               id: 'status',
               title: 'Status',
               width: '100px',
-              render: (spaceship) => spaceship.status === 'active' ? 'Active' : 'Inactive',
+              render: (spaceship) =>
+                spaceship.status === 'active' ? 'Active' : 'Inactive',
             },
             {
               id: 'maxDistance',
@@ -119,7 +140,7 @@ export const SpaceshipsTable = () => {
               defaultHidden: true,
               infoTooltipProps: {
                 content: 'The maximum distance the spaceship can travel',
-              }
+              },
             },
             {
               id: 'maxCrewMembers',

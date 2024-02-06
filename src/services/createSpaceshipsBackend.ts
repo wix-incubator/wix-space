@@ -34,10 +34,15 @@ export const createSpaceshipsBackend = () => {
     itemKey: (item) => item.id,
     total: 500,
     delay: { min: 300, max: 900 },
-    predicate: ({ search }) => {
+    predicate: ({ search, filters }) => {
       const rgx = new RegExp(`(\\s+|^)${escapeRegExp(search)}`, 'i');
+      const {status} = filters
       return (item) => {
         if (search && !rgx.test(`${item.name}`)) {
+          return false;
+        }
+
+        if (status && status.length > 0 && !status.includes(item.status)) {
           return false;
         }
 
