@@ -1,17 +1,13 @@
 # wix-space
 
-This project was bootstrapped with [Create Wix App](https://github.com/wix-private/wix-cli/tree/master/packages/create-app).
+## Clone as a @wix/cli template
 
-## Setup 🔧
-
-##### Install dependencies:
-
-```console
-npm install
+```bash
+yarn create @wix/app --template git@github.com:wix-incubtator/wix-space.git
 ```
 
-## Available Scripts
+## Install a live version of the template on your site
 
-In the project directory, you can run:
-
-...
+```bash 
+yarn add @wix/space
+```
