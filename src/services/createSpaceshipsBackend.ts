@@ -30,7 +30,7 @@ export const createSpaceshipsBackend = () => {
           alpha: false,
           numeric: true,
         }),
-        imageUrl: `https://source.unsplash.com/300x300/?spaceship,${name}`,
+        imageUrl: `https://source.unsplash.com/48x48/?spaceship,${name}`,
         status: chance.pickone(['active', 'inactive']),
         maxDistance: chance.floating({ min: 0, max: 20, fixed: 1 }),
         maxCrewMembers: chance.integer({ min: crewMembersCount, max: 100 }),
