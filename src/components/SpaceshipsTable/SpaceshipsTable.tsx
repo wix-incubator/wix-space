@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import {
   CollectionPage,
+  CollectionToolbarFilters,
   CustomColumns,
   InfiniteScrollTable,
   MultiBulkActionToolbar,
+  RadioGroupFilter,
   stringsArrayFilter,
   TabsFilter,
   TabTotalCounterBadge,
@@ -31,6 +33,7 @@ export const SpaceshipsTable = () => {
         cursor: query.cursor,
         filters: {
           status: query.filters.status,
+          maxDistance: query.filters.maxDistance,
         },
         sort: query.sort,
         search: query.search,
@@ -47,6 +50,7 @@ export const SpaceshipsTable = () => {
       status: stringsArrayFilter({
         itemName: (status) => (status === 'active' ? 'Active' : 'Inactive'),
       }),
+      maxDistance: stringsArrayFilter(),
     },
   });
 
@@ -168,6 +172,15 @@ export const SpaceshipsTable = () => {
               },
             ],
           })}
+          filters={
+            <CollectionToolbarFilters inline={0}>
+              <RadioGroupFilter
+                accordionItemProps={{ title: 'Max Distance' }}
+                data={['5', '10', '15']}
+                filter={table.collection.filters.maxDistance}
+              />
+            </CollectionToolbarFilters>
+          }
         />
       </Page.Content>
     </CollectionPage>

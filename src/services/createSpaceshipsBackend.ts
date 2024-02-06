@@ -27,7 +27,7 @@ export const createSpaceshipsBackend = () => {
         }),
         imageUrl: `https://source.unsplash.com/300x300/?spaceship,${name}`,
         status: chance.pickone(['active', 'inactive']),
-        maxDistance: chance.integer({ min: 1000, max: 100000 }),
+        maxDistance: chance.integer({ min: 0, max: 20 }),
         maxCrewMembers: chance.integer({ min: crewMembersCount, max: 100 }),
       };
     },
@@ -36,13 +36,21 @@ export const createSpaceshipsBackend = () => {
     delay: { min: 300, max: 900 },
     predicate: ({ search, filters }) => {
       const rgx = new RegExp(`(\\s+|^)${escapeRegExp(search)}`, 'i');
-      const {status} = filters
+      const { status, maxDistance: [maxDistance] = [] } = filters;
       return (item) => {
         if (search && !rgx.test(`${item.name}`)) {
           return false;
         }
 
         if (status && status.length > 0 && !status.includes(item.status)) {
+          return false;
+        }
+
+        if (
+          maxDistance != null &&
+          maxDistance !== 'all' &&
+          item.maxDistance > parseInt(maxDistance)
+        ) {
           return false;
         }
 
