@@ -1,4 +1,4 @@
 {
   "id": "<%= generatePageID() %>",
-  "name": "<%= packageName %>"
+  "title": "<%= packageName %>"
 }
