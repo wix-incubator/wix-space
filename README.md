@@ -5,7 +5,7 @@
 ### With NPM
 
 ```bash
-npm create @wix/app@latest --template git@github.com:wix-incubator/wix-space.git
+npm init @wix/app@latest -- --template git@github.com:wix-incubator/wix-space.git
 ```
 
 ### With Yarn
