@@ -5,21 +5,25 @@ import {
   CustomColumns,
   DateRangeFilter,
   dateRangeFilter,
+  deleteSecondaryAction,
   InfiniteScrollTable,
   MultiBulkActionToolbar,
   RadioGroupFilter,
   stringsArrayFilter,
-  TabsFilter,
-  TabTotalCounterBadge,
   useCursorInfiniteScrollTable,
+  useOptimisticActions,
 } from '@wix/dashboard-components-alpha';
 import { Breadcrumbs, Page } from '@wix/design-system';
+import { StatusComplete, StatusStop } from '@wix/wix-ui-icons-common';
 import { Spaceship } from '../../types/Spaceship';
 import { SpaceshipFilters } from '../../types/SpaceshipFilters';
 import { createSpaceshipsBackend } from '../../services/createSpaceshipsBackend';
 import { SpaceshipMainCell } from './SpaceshipMainCell';
 import { useEnvironment } from '@wix/sdk-react';
 import { EnvironmentState } from '@wix/dashboard-react';
+import { spaceshipFiltersPredicate } from '../../services/spaceshipFiltersPredicate';
+import { updateSpaceships } from './updateSpaceships';
+import { deleteSpaceships } from './deleteSpaceships';
 
 export const SpaceshipsTable = () => {
   const [backend] = useState(() => createSpaceshipsBackend());
@@ -55,6 +59,7 @@ export const SpaceshipsTable = () => {
       }),
       maxDistance: stringsArrayFilter(),
       launchDate: dateRangeFilter(),
+      lastUpdated: dateRangeFilter(),
     },
   });
 
@@ -66,6 +71,10 @@ export const SpaceshipsTable = () => {
         dateStyle: 'medium',
       }),
   );
+
+  const optimisticActions = useOptimisticActions(table.collection, {
+    predicate: spaceshipFiltersPredicate,
+  });
 
   return (
     <CollectionPage state={table.collection} height="100vh">
@@ -88,18 +97,69 @@ export const SpaceshipsTable = () => {
         <InfiniteScrollTable
           state={table}
           horizontalScroll
-          bulkActionToolbar={() => <MultiBulkActionToolbar />}
-          customColumns={<CustomColumns />}
-          tabs={
-            <TabsFilter
-              filter={table.collection.filters.status}
-              all="All Spaceships"
-              data={['active', 'inactive']}
-              renderCounterBadge={(value) => (
-                <TabTotalCounterBadge value={value} skin="neutralStandard" />
-              )}
+          bulkActionToolbar={({
+            isSelectAll,
+            selectedValues,
+            query,
+            clearSelection,
+            openConfirmModal,
+          }) => (
+            <MultiBulkActionToolbar
+              primaryActionItems={[
+                {
+                  text: 'Activate',
+                  onClick: () => {
+                    updateSpaceships({
+                      table,
+                      optimisticActions,
+                      backend,
+                      patch: { status: 'active', lastUpdated: new Date() },
+                      query,
+                      clearSelection,
+                      selectedValues,
+                      isSelectAll,
+                    });
+                  },
+                },
+                {
+                  text: 'Deactivate',
+                  onClick: () => {
+                    updateSpaceships({
+                      table,
+                      optimisticActions,
+                      backend,
+                      patch: { status: 'inactive', lastUpdated: new Date() },
+                      query,
+                      clearSelection,
+                      selectedValues,
+                      isSelectAll,
+                    });
+                  },
+                },
+              ]}
+              secondaryActionItems={[
+                {
+                  text: 'Delete',
+                  onClick: () => {
+                    openConfirmModal({
+                      theme: 'destructive',
+                      primaryButtonOnClick: () => {
+                        deleteSpaceships({
+                          selectedValues,
+                          query,
+                          clearSelection,
+                          optimisticActions,
+                          backend,
+                          isSelectAll,
+                        });
+                      },
+                    });
+                  },
+                },
+              ]}
             />
-          }
+          )}
+          customColumns={<CustomColumns />}
           columns={[
             {
               id: 'shipNameAndModel',
@@ -160,23 +220,54 @@ export const SpaceshipsTable = () => {
               align: 'center',
               defaultHidden: true,
             },
+            {
+              id: 'lastUpdated',
+              title: 'Last Updated',
+              width: '140px',
+              render: (spaceship) => dateFormatter.format(spaceship.lastUpdated),
+              align: 'center',
+              sortable: true,
+              defaultSortDirection: 'desc',
+            },
           ]}
-          actionsCell={() => ({
+          actionsCell={(spaceship, _index, actionsCellAPI) => ({
             secondaryActions: [
               {
-                icon: <></>,
-                text: 'Edit',
+                icon:
+                  spaceship.status === 'active' ? (
+                    <StatusStop />
+                  ) : (
+                    <StatusComplete />
+                  ),
+                text: spaceship.status === 'active' ? 'Deactivate' : 'Activate',
                 onClick: () => {
-                  console.log('Edit');
+                  optimisticActions.updateOne(
+                    {
+                      ...spaceship,
+                      status:
+                        spaceship.status === 'active' ? 'inactive' : 'active',
+                      lastUpdated: new Date(),
+                    },
+                    {
+                      submit: async (updatedSpaceships) => {
+                        // This implementation accesses a mock in-memory backend
+                        // In a real-world scenario, you would update the data in a real backend
+                        await backend.updateMany(updatedSpaceships);
+                      },
+                      keepPosition: true,
+                    },
+                  );
                 },
               },
-              {
-                icon: <></>,
-                text: 'Delete',
-                onClick: () => {
-                  console.log('Delete');
+              deleteSecondaryAction({
+                optimisticActions,
+                actionsCellAPI,
+                submit: async (deletedSpaceships) => {
+                  // This implementation accesses a mock in-memory backend
+                  // In a real-world scenario, you would delete the data in a real backend
+                  await backend.deleteMany(deletedSpaceships);
                 },
-              },
+              }),
             ],
           })}
           filters={

@@ -10,6 +10,7 @@ export interface Spaceship {
   imageUrl: string;
   crewMembersCount: number;
   launchDate: Date;
+  lastUpdated: Date;
   code: string;
   status: 'active' | 'inactive';
   maxDistance: number;
