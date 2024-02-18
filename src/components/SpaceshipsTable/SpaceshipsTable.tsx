@@ -74,7 +74,7 @@ export const SpaceshipsTable = () => {
 
   const optimisticActions = useOptimisticActions(table.collection, {
     predicate: spaceshipFiltersPredicate,
-    orderBy: () => [],
+    orderBy: () => [], // will force keeping the order of the items after updating them
   });
 
   return (
