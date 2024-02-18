@@ -160,6 +160,7 @@ export const SpaceshipsTable = () => {
             />
           )}
           customColumns={<CustomColumns />}
+          stickyColumns={2}
           columns={[
             {
               id: 'shipNameAndModel',
