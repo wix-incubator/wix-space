@@ -1,7 +1,7 @@
 import { SpaceshipFilters } from '../types/SpaceshipFilters';
 import { escapeRegExp } from 'lodash';
 import { Spaceship } from '../types/Spaceship';
-import { ComputedQuery } from '@wix/dashboard-components-alpha';
+import { ComputedQuery } from '@wix/patterns';
 
 export function spaceshipFiltersPredicate({
   search,

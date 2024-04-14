@@ -1,31 +1,31 @@
 import { ComputedQuery } from '@wix/bex-core';
 import {
   CollectionOptimisticActions,
-  InfiniteScrollTableState,
-} from '@wix/dashboard-components-alpha';
+  TableState,
+} from '@wix/patterns';
 import { Spaceship } from '../../types/Spaceship';
 import { SpaceshipFilters } from '../../types/SpaceshipFilters';
-import { InMemoryBackend } from '@wix/dashboard-components-alpha/testkit/backend';
+import { InMemoryBackend } from '@wix/patterns/testkit/backend';
 
 export function updateSpaceships({
   optimisticActions,
   backend,
   patch,
-  isSelectAll,
+                                   allSelected,
   clearSelection,
   selectedValues,
   query,
 }: {
-  table: InfiniteScrollTableState<Spaceship, SpaceshipFilters>;
+  table: TableState<Spaceship, SpaceshipFilters>;
   optimisticActions: CollectionOptimisticActions<Spaceship, SpaceshipFilters>;
   backend: InMemoryBackend<Spaceship, SpaceshipFilters>;
   patch: Partial<Spaceship>;
   selectedValues: Spaceship[];
-  isSelectAll: boolean;
+  allSelected: boolean;
   clearSelection: () => void;
   query: ComputedQuery<SpaceshipFilters>;
 }) {
-  if (isSelectAll) {
+  if (allSelected) {
     optimisticActions.updateAll(patch, {
       successToast: `${
         query.hasActiveFilters ? 'Filtered' : 'All'

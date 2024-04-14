@@ -1,13 +1,13 @@
 import { ComputedQuery } from '@wix/bex-core';
-import { CollectionOptimisticActions } from '@wix/dashboard-components-alpha';
+import { CollectionOptimisticActions } from '@wix/patterns';
 import { Spaceship } from '../../types/Spaceship';
 import { SpaceshipFilters } from '../../types/SpaceshipFilters';
-import { InMemoryBackend } from '@wix/dashboard-components-alpha/testkit/backend';
+import { InMemoryBackend } from '@wix/patterns/testkit/backend';
 
 export function deleteSpaceships({
   optimisticActions,
   backend,
-  isSelectAll,
+  allSelected,
   clearSelection,
   selectedValues,
   query,
@@ -15,13 +15,15 @@ export function deleteSpaceships({
   optimisticActions: CollectionOptimisticActions<Spaceship, SpaceshipFilters>;
   backend: InMemoryBackend<Spaceship, SpaceshipFilters>;
   selectedValues: Spaceship[];
-  isSelectAll: boolean;
+  allSelected: boolean;
   clearSelection: () => void;
   query: ComputedQuery<SpaceshipFilters>;
 }) {
-  if (isSelectAll) {
+  if (allSelected) {
     optimisticActions.deleteAll({
-      successToast: `${query.hasActiveFilters ? 'Filtered' : 'All'} spaceships deleted.`,
+      successToast: `${
+        query.hasActiveFilters ? 'Filtered' : 'All'
+      } spaceships deleted.`,
       submit: async () => {
         // This implementation accesses a mock in-memory backend
         // In a real-world scenario, you would update the data in a real backend

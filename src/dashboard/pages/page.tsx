@@ -1,6 +1,6 @@
 import { withDashboard } from '@wix/dashboard-react';
 import { WixDesignSystemProvider } from '@wix/design-system';
-import { WixPatternsProvider } from '@wix/dashboard-components-alpha/provider';
+import { WixPatternsProvider } from '@wix/patterns/provider';
 import React from 'react';
 import { SpaceshipsTable } from '../../components/SpaceshipsTable/SpaceshipsTable';
 

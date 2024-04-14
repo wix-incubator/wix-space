@@ -6,13 +6,13 @@ import {
   DateRangeFilter,
   dateRangeFilter,
   deleteSecondaryAction,
-  InfiniteScrollTable,
+  Table,
   MultiBulkActionToolbar,
   RadioGroupFilter,
   stringsArrayFilter,
-  useCursorInfiniteScrollTable,
+  useTableCollection,
   useOptimisticActions,
-} from '@wix/dashboard-components-alpha';
+} from '@wix/patterns';
 import { Breadcrumbs, Page } from '@wix/design-system';
 import { StatusComplete, StatusStop } from '@wix/wix-ui-icons-common';
 import { Spaceship } from '../../types/Spaceship';
@@ -28,8 +28,9 @@ import { deleteSpaceships } from './deleteSpaceships';
 export const SpaceshipsTable = () => {
   const [backend] = useState(() => createSpaceshipsBackend());
 
-  const table = useCursorInfiniteScrollTable<Spaceship, SpaceshipFilters>({
+  const table = useTableCollection<Spaceship, SpaceshipFilters>({
     queryName: 'spaceships',
+    paginationMode: 'cursor',
     limit: 50,
     fetchData: async (query) => {
       // This implementation accesses a mock in-memory backend
@@ -95,11 +96,11 @@ export const SpaceshipsTable = () => {
         }
       />
       <Page.Content>
-        <InfiniteScrollTable
+        <Table
           state={table}
           horizontalScroll
           bulkActionToolbar={({
-            isSelectAll,
+            allSelected,
             selectedValues,
             query,
             clearSelection,
@@ -108,7 +109,7 @@ export const SpaceshipsTable = () => {
             <MultiBulkActionToolbar
               primaryActionItems={[
                 {
-                  text: 'Activate',
+                  label: 'Activate',
                   onClick: () => {
                     updateSpaceships({
                       table,
@@ -118,12 +119,12 @@ export const SpaceshipsTable = () => {
                       query,
                       clearSelection,
                       selectedValues,
-                      isSelectAll,
+                      allSelected,
                     });
                   },
                 },
                 {
-                  text: 'Deactivate',
+                  label: 'Deactivate',
                   onClick: () => {
                     updateSpaceships({
                       table,
@@ -133,14 +134,14 @@ export const SpaceshipsTable = () => {
                       query,
                       clearSelection,
                       selectedValues,
-                      isSelectAll,
+                      allSelected,
                     });
                   },
                 },
               ]}
               secondaryActionItems={[
                 {
-                  text: 'Delete',
+                  label: 'Delete',
                   onClick: () => {
                     openConfirmModal({
                       theme: 'destructive',
@@ -151,7 +152,7 @@ export const SpaceshipsTable = () => {
                           clearSelection,
                           optimisticActions,
                           backend,
-                          isSelectAll,
+                          allSelected,
                         });
                       },
                     });
@@ -229,10 +230,10 @@ export const SpaceshipsTable = () => {
               render: (spaceship) => dateFormatter.format(spaceship.lastUpdated),
               align: 'center',
               sortable: true,
-              defaultSortDirection: 'desc',
+              defaultSortOrder: 'desc',
             },
           ]}
-          actionsCell={(spaceship, _index, actionsCellAPI) => ({
+          actionCell={(spaceship, _index, actionCellAPI) => ({
             secondaryActions: [
               {
                 icon:
@@ -263,7 +264,7 @@ export const SpaceshipsTable = () => {
               },
               deleteSecondaryAction({
                 optimisticActions,
-                actionsCellAPI,
+                actionCellAPI,
                 submit: async (deletedSpaceships) => {
                   // This implementation accesses a mock in-memory backend
                   // In a real-world scenario, you would delete the data in a real backend

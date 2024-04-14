@@ -1,4 +1,4 @@
-import { InMemoryBackend } from '@wix/dashboard-components-alpha/testkit/backend';
+import { InMemoryBackend } from '@wix/patterns/testkit/backend';
 import { Chance } from 'chance';
 import { Spaceship } from '../types/Spaceship';
 import { SpaceshipFilters } from '../types/SpaceshipFilters';

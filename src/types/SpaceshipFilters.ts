@@ -1,4 +1,4 @@
-import { Filter, RangeItem } from '@wix/dashboard-components-alpha';
+import { Filter, RangeItem } from '@wix/patterns';
 
 export type SpaceshipFilters = {
   status: Filter<string[]>;
